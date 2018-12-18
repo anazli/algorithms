@@ -4,7 +4,7 @@ Implementation of some fundamental algorithms in C++.
 Currently... 
 
 ## Search algorithms
-* Binary search - <img src="https://latex.codecogs.com/gif.latex?O(\log{n}) " /> 
+* Binary search <a href="https://www.codecogs.com/eqnedit.php?latex=O(\log{n})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?O(\log{n})" title="O(\log{n})" /></a>
 
 ## Sorting algorithms
-* Selection sort - <img src="https://latex.codecogs.com/gif.latex?O(N^2) " /> 
+* Selection sort <a href="https://www.codecogs.com/eqnedit.php?latex=O(N^2)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?O(N^2)" title="O(n^2)" /></a> 
