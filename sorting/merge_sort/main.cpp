@@ -4,21 +4,36 @@
 
 using namespace std;
 
+void print(const vector<int>& v);
 void merge(vector<int>& v, int p, int q, int r);
 void merge_sort(vector<int>& v, int p, int r);
 
 int main()
 {
     vector<int> v = {14, 7, 3, 12, -9, 11, -6, 2, 0};
-    merge_sort(v, 0, v.size()-1);
-    for(int i = 0 ; i < v.size() ; ++i)
-        cout << v[i] << " ";
-    cout << endl;
+    int N = v.size();
+
+    cout << "Array before sorting:" << endl;
+    print(v);
+
+    cout << "Applying the merge sort algorithm..." << endl;
+    merge_sort(v, 0, N-1);
+
+    cout << "Array after sorting:" << endl;
+    print(v);
 
 
     return 0;
 }
 
+void print(const vector<int>& v)
+{
+    int N = v.size();
+    for(int i = 0 ; i < N ; ++i)
+        cout << v[i] << " ";
+
+    cout << endl;
+}
 
 //merge the two subvectors into the vector by comparing their
 //values
@@ -77,7 +92,6 @@ void merge_sort(vector<int>& v, int p, int r)
     if(p < r)
     {
         int mid = int(floor(double(r + p)/2.));
-        cout << p << " " << mid << endl;
         merge_sort(v, p, mid);
         merge_sort(v, mid+1, r);
         merge(v, p, mid, r);

@@ -4,11 +4,8 @@
 using namespace std;
 
 void print(const vector<int>& v);
-
 void swap(vector<int>& v, int id1, int id2);
-
 int arg_min(const vector<int>& v, int start);
-
 void selection_sort(vector<int>& v);
 
 int main()
@@ -16,13 +13,14 @@ int main()
     vector<int> v = {10,3,6,7,2,0,4,5,9,8,1};
     vector<int> v1 = {10,3,-6,7,2,0,4,5,-9,8,-1};
 
-    cout << "Vector before sorting:\n";
+    cout << "Array before sorting:\n";
     print(v1);
+
+    cout << "Applying the selection sort algorithm..." << endl;
     selection_sort(v1);
-    cout << "Vector after sorting:\n";
+
+    cout << "Array after sorting:\n";
     print(v1);
-
-
 
     return 0;
 }
@@ -35,7 +33,6 @@ void print(const vector<int>& v)
         cout << v[i] << " ";
 
     cout << endl;
-
 }
 
 

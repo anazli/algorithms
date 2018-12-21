@@ -12,10 +12,14 @@ int main()
 {
 	vector<int> v = {3,5,7,11,13,2,-1,0,9,6,-6};
 
-	print(v);
-    insertion_sort(v);
+    cout << "Array before sorting:" << endl;
 	print(v);
 
+    cout << "Applying the insertion sort algorithm..." << endl;
+    insertion_sort(v);
+
+    cout << "Array after sorting:" << endl;
+	print(v);
 
 	return 0;
 }
