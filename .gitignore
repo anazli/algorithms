@@ -39,3 +39,37 @@
 
 # debug information files
 *.dwo
+
+# CMake build directories
+build/
+build_debug/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
+
+# Conan
+.conan2/
+conanbuild.sh
+conanrun.sh
+
+# Python virtual environment
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
