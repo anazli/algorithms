@@ -1,8 +1,9 @@
 #pragma once
 
 namespace cool {
-template <class T> class vector {
-public:
+template <class T>
+class vector {
+ public:
   void temp() {}
 };
-} // namespace cool
+}  // namespace cool
