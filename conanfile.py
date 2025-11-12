@@ -1,3 +1,4 @@
+import os
 from conan import ConanFile
 from conan.tools.cmake import CMake, cmake_layout
 from conan.tools.files import copy
@@ -28,35 +29,41 @@ class AlgorithmsConan(ConanFile):
         cmake.build()
 
     def package(self):
+        # Copy headers preserving directory structure
         copy(
             self,
             "*.h",
-            src=self.source_folder,
-            dst=self.package_folder,
-            keep_path=False,
+            src=os.path.join(self.source_folder, "include"),
+            dst=os.path.join(self.package_folder, "include"),
+            keep_path=True,
         )
         copy(
             self,
             "*.hpp",
-            src=self.source_folder,
-            dst=self.package_folder,
-            keep_path=False,
+            src=os.path.join(self.source_folder, "include"),
+            dst=os.path.join(self.package_folder, "include"),
+            keep_path=True,
         )
+        # Copy compiled libraries
         copy(
             self,
             "*.lib",
             src=self.build_folder,
-            dst=self.package_folder,
+            dst=os.path.join(self.package_folder, "lib"),
             keep_path=False,
         )
         copy(
-            self, "*.a", src=self.build_folder, dst=self.package_folder, keep_path=False
+            self,
+            "*.a",
+            src=self.build_folder,
+            dst=os.path.join(self.package_folder, "lib"),
+            keep_path=False,
         )
         copy(
             self,
             "*.so",
             src=self.build_folder,
-            dst=self.package_folder,
+            dst=os.path.join(self.package_folder, "lib"),
             keep_path=False,
         )
 

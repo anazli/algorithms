@@ -8,17 +8,22 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/build/Release/generators")
 
-add_library(algorithms
-	src/hello_world.cpp
+add_library(algorithms INTERFACE
+	include/cool/containers/sequential/vector.h
 )
 
 target_include_directories(algorithms
-	PUBLIC
+	INTERFACE
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:include>
 )
 
-target_compile_features(algorithms PUBLIC cxx_std_20)
+#target_include_directories(algorithms 
+#    PRIVATE
+#        ${CMAKE_CURRENT_SOURCE_DIR}/src
+#)
+
+target_compile_features(algorithms INTERFACE cxx_std_20)
 
 option(BUILD_TESTS "Build tests" ON)
 if(BUILD_TESTS)

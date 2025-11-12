@@ -10,7 +10,7 @@ endif()
 find_package(GTest REQUIRED)
 
 add_executable(test_algorithms
-  test_hello_world.cpp
+  test_vector.cpp
 )
 
 target_include_directories(test_algorithms PRIVATE ${CMAKE_SOURCE_DIR}/include)

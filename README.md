@@ -44,22 +44,32 @@ ctest --test-dir build_debug --output-on-failure
 
 ```
 .
-├── include/           # Public headers
-│   └── hello_world.h
-├── src/               # Implementation files
-│   └── hello_world.cpp
-├── test/              # Unit tests (GoogleTest)
+├── include/cool/              # Public namespace (cool::)
+│   ├── containers/
+│   │   └── sequential/
+│   │       └── vector.h       # Usage: #include <cool/containers/sequential/vector.h>
+│   
+├── src/                        # Implementation files
+│   └── containers/
+│       └── sequential/
+│           └── vector.cpp      # If not template
+├── test/                       # Unit tests (GoogleTest)
 │   ├── CMakeLists.txt
-│   └── test_hello_world.cpp
-├── consumer/          # Example consumer for testing package creation
+│   └── test_vector.cpp
+├── consumer/                   # Example consumer for testing package creation
 │   ├── CMakeLists.txt
 │   ├── conanfile.py
 │   └── main.cpp
-├── CMakeLists.txt     # Root CMake configuration
-├── conanfile.py       # Conan package recipe
-├── build.sh           # Convenient build script
-└── README.md          # This file
+├── CMakeLists.txt              # Root CMake configuration
+├── conanfile.py                # Conan package recipe
+├── build.sh                    # Convenient build script
+└── README.md                   # This file
 ```
+
+### Header Organization
+
+The library uses a nested namespace structure:
+- **Namespaced headers**: `#include <cool/containers/sequential/vector.h>` (under include/cool/)
 
 ## Building with CMake
 
@@ -240,7 +250,6 @@ cmake -S . -B build \
   -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
-
 ## License
 
 MIT
