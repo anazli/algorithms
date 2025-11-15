@@ -2,6 +2,13 @@
 
 A small algorithms library.
 
+## Data Structures
+
+- **[Containers](include/cool/containers)**
+  - **[Sequential](include/cool/containers/sequential)**
+    - **[Dynamic Array](include/cool/containers/sequential/vector.h)**
+
+
 ## Quick Start
 
 **Easiest method: Use the build script**
