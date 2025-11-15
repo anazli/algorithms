@@ -31,7 +31,7 @@ TEST_F(VectorTest,
   }
 }
 
-TEST_F(VectorTest, Given2VectorsWhenOneIsConstructedFromOtherThenTheyAreEqual) {
+TEST_F(VectorTest, Given2VectorsWhenOneIsCopiedToOtherThenTheyAreEqual) {
   auto val = acos(-1);
   cool::vector<double> a(2, val);
   cool::vector<double> b(a);
@@ -40,11 +40,30 @@ TEST_F(VectorTest, Given2VectorsWhenOneIsConstructedFromOtherThenTheyAreEqual) {
   ASSERT_EQ(a[1], b[1]);
 }
 
-TEST_F(VectorTest, Given2VectorsWhenOneIsAsignedToOtherThenTheyAreEqual) {
+TEST_F(VectorTest, Given2VectorsWhenOneIsMovedToOtherThenTheyAreEqual) {
+  auto val = acos(-1);
+  cool::vector<double> a(2, val);
+  cool::vector<double> b(std::move(a));
+  ASSERT_EQ(a.size(), b.size());
+  ASSERT_EQ(a[0], b[0]);
+  ASSERT_EQ(a[1], b[1]);
+}
+
+TEST_F(VectorTest, Given2VectorsWhenOneIsCopyAsignedToOtherThenTheyAreEqual) {
   auto val = acos(-1);
   cool::vector<int> a(2, val);
   cool::vector<int> b(5, 0);
   b = a;
+  ASSERT_EQ(a.size(), b.size());
+  ASSERT_EQ(a[0], b[0]);
+  ASSERT_EQ(a[1], b[1]);
+}
+
+TEST_F(VectorTest, Given2VectorsWhenOneIsMoveAsignedToOtherThenTheyAreEqual) {
+  auto val = acos(-1);
+  cool::vector<int> a(2, val);
+  cool::vector<int> b(5, 0);
+  b = std::move(a);
   ASSERT_EQ(a.size(), b.size());
   ASSERT_EQ(a[0], b[0]);
   ASSERT_EQ(a[1], b[1]);

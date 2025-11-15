@@ -15,11 +15,11 @@ class vector {
   vector();
   explicit vector(size_type n, const T& val = T());
   vector(const vector& v);
-  vector& operator=(const vector& v);
+  vector(const vector&& v) noexcept;
   ~vector();
 
-  vector(const vector&& v);
-  vector& operator=(const vector&& v);
+  vector& operator=(const vector& v);
+  vector& operator=(const vector&& v) noexcept;
 
   T& operator[](size_type i) { return m_data[i]; }
   const T& operator[](size_type i) const { return m_data[i]; }
@@ -39,7 +39,8 @@ class vector {
   }
 
  private:
-  void initialize(const_iterator left, const_iterator right);
+  void initialize_copy(const_iterator left, const_iterator right);
+  void initialize_move(const_iterator left, const_iterator right);
   void destroy();
   void resize();
 
@@ -63,7 +64,12 @@ vector<T>::vector(size_type n, const T& val) {
 
 template <class T>
 vector<T>::vector(const vector<T>& v) {
-  initialize(v.begin(), v.end());
+  initialize_copy(v.begin(), v.end());
+}
+
+template <class T>
+vector<T>::vector(const vector<T>&& v) noexcept {
+  initialize_move(v.begin(), v.end());
 }
 
 template <class T>
@@ -75,7 +81,16 @@ template <class T>
 vector<T>& vector<T>::operator=(const vector<T>& v) {
   if (&v != this) {
     destroy();
-    initialize(v.begin(), v.end());
+    initialize_copy(v.begin(), v.end());
+  }
+  return *this;
+}
+
+template <class T>
+vector<T>& vector<T>::operator=(const vector<T>&& v) noexcept {
+  if (&v != this) {
+    destroy();
+    initialize_move(v.begin(), v.end());
   }
   return *this;
 }
@@ -90,9 +105,15 @@ void vector<T>::destroy() {
 }
 
 template <class T>
-void vector<T>::initialize(const_iterator left, const_iterator right) {
+void vector<T>::initialize_copy(const_iterator left, const_iterator right) {
   m_data = m_allocator.allocate(right - left);
   m_current_end = m_end = std::uninitialized_copy(left, right, m_data);
+}
+
+template <class T>
+void vector<T>::initialize_move(const_iterator left, const_iterator right) {
+  m_data = m_allocator.allocate(right - left);
+  m_current_end = m_end = std::uninitialized_move(left, right, m_data);
 }
 
 template <class T>
