@@ -49,3 +49,11 @@ TEST_F(VectorTest, Given2VectorsWhenOneIsAsignedToOtherThenTheyAreEqual) {
   ASSERT_EQ(a[0], b[0]);
   ASSERT_EQ(a[1], b[1]);
 }
+
+TEST_F(VectorTest, GivenExistingVectorWhenElementIsAddedThenVectorContainsIt) {
+  auto n = 5;
+  cool::vector<int> v(n, 0);
+  v.push_back(9);
+  ASSERT_EQ(n + 1, v.size());
+  ASSERT_EQ(9, v[v.size() - 1]);
+}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <new>
 #include <utility>
 
 namespace cool {
@@ -30,11 +31,18 @@ class vector {
   iterator end() { return m_end; }
   const_iterator end() const { return m_end; }
 
-  size_type size() { return m_end - m_data; }
+  size_type size() { return m_current_end - m_data; }
+  void push_back(const T& elem) {
+    if (m_current_end == m_end) {
+      resize();
+    }
+    std::construct_at(m_current_end++, elem);
+  }
 
  private:
   void initialize(const_iterator left, const_iterator right);
   void destroy();
+  void resize();
 
   iterator m_data;
   iterator m_current_end;
@@ -86,6 +94,17 @@ template <class T>
 void vector<T>::initialize(const_iterator left, const_iterator right) {
   m_data = m_allocator.allocate(right - left);
   m_current_end = m_end = std::uninitialized_copy(left, right, m_data);
+}
+
+template <class T>
+void vector<T>::resize() {
+  size_type size = 2 * (m_end - m_data);
+  iterator data = m_allocator.allocate(size);
+  iterator current_end = std::uninitialized_copy(m_data, m_current_end, data);
+  destroy();
+  m_data = data;
+  m_current_end = current_end;
+  m_end = m_data + size;
 }
 
 }  // namespace cool
