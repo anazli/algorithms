@@ -12,12 +12,14 @@ class VectorTest : public testing::Test {
 TEST_F(VectorTest, GivenNoInputSizeWhenVectorIsCreatedThenItIsEmpty) {
   cool::vector<int> v;
   ASSERT_EQ(0, v.size());
+  ASSERT_TRUE(v.empty());
 }
 
 TEST_F(VectorTest, GivenInputSizeWhenVectorIsCreatedThenItsSizeIsCorrect) {
   auto n = 100;
   cool::vector<int> v(n);
   ASSERT_EQ(n, v.size());
+  ASSERT_FALSE(v.empty());
 }
 
 TEST_F(VectorTest,

@@ -30,13 +30,14 @@ class vector {
   iterator end() { return m_end; }
   const_iterator end() const { return m_end; }
 
-  size_type size() { return m_current_end - m_data; }
+  size_type size() const { return m_current_end - m_data; }
   void push_back(const T& elem) {
     if (m_current_end == m_end) {
       resize();
     }
     std::construct_at(m_current_end++, elem);
   }
+  bool empty() const { return size() == ptrdiff_t(0); }
 
  private:
   void initialize_copy(const_iterator left, const_iterator right);
