@@ -30,3 +30,22 @@ TEST_F(VectorTest,
     ASSERT_EQ(val, elem);
   }
 }
+
+TEST_F(VectorTest, Given2VectorsWhenOneIsConstructedFromOtherThenTheyAreEqual) {
+  auto val = acos(-1);
+  cool::vector<double> a(2, val);
+  cool::vector<double> b(a);
+  ASSERT_EQ(a.size(), b.size());
+  ASSERT_EQ(a[0], b[0]);
+  ASSERT_EQ(a[1], b[1]);
+}
+
+TEST_F(VectorTest, Given2VectorsWhenOneIsAsignedToOtherThenTheyAreEqual) {
+  auto val = acos(-1);
+  cool::vector<int> a(2, val);
+  cool::vector<int> b(5, 0);
+  b = a;
+  ASSERT_EQ(a.size(), b.size());
+  ASSERT_EQ(a[0], b[0]);
+  ASSERT_EQ(a[1], b[1]);
+}

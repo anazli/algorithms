@@ -14,10 +14,9 @@ class vector {
 
   vector();
   explicit vector(size_type n, const T& val = T());
-  ~vector();
-
   vector(const vector& v);
   vector& operator=(const vector& v);
+  ~vector();
 
   vector(const vector&& v);
   vector& operator=(const vector&& v);
@@ -34,7 +33,7 @@ class vector {
   size_type size() { return m_end - m_data; }
 
  private:
-  void initialize();
+  void initialize(const_iterator left, const_iterator right);
   void destroy();
 
   iterator m_data;
@@ -57,13 +56,21 @@ vector<T>::vector(size_type n, const T& val) {
 
 template <class T>
 vector<T>::vector(const vector<T>& v) {
-  m_allocator.allocate(v.end() - v.end());
-  m_current_end = m_end = std::uninitialized_copy(v.begin(), v.end(), m_data);
+  initialize(v.begin(), v.end());
 }
 
 template <class T>
 vector<T>::~vector() {
   destroy();
+}
+
+template <class T>
+vector<T>& vector<T>::operator=(const vector<T>& v) {
+  if (&v != this) {
+    destroy();
+    initialize(v.begin(), v.end());
+  }
+  return *this;
 }
 
 template <class T>
@@ -73,6 +80,12 @@ void vector<T>::destroy() {
     m_allocator.deallocate(m_data, m_end - m_data);
   }
   m_data = m_current_end = m_end = nullptr;
+}
+
+template <class T>
+void vector<T>::initialize(const_iterator left, const_iterator right) {
+  m_data = m_allocator.allocate(right - left);
+  m_current_end = m_end = std::uninitialized_copy(left, right, m_data);
 }
 
 }  // namespace cool
