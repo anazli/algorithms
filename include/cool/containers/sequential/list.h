@@ -14,13 +14,15 @@ namespace cool {
 template <class T, class Allocator = std::allocator<T>>
 class list {
  public:
-  using iterator = T*;
-  using const_iterator = const T*;
+  using iterator = Node<T>*;
+  using const_iterator = const Node<T>*;
   using size_type = size_t;
 
  private:
-  iterator m_head;
-  iterator m_tail;
+  iterator m_head = nullptr;
+  iterator m_tail = nullptr;
+  size_type m_size = 0;
+  Allocator m_allocator = std::allocator<T>();
 
   template <class T>
   class Node {
