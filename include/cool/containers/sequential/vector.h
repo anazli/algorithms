@@ -20,6 +20,7 @@ class vector {
   using size_type = size_t;
 
   vector();
+  vector(const Allocator& alloc);
   explicit vector(size_type n, const T& val = T());
   vector(const vector& v);
   vector(const vector&& v) noexcept;
@@ -61,6 +62,13 @@ class vector {
 template <class T, class Allocator>
 vector<T, Allocator>::vector()
     : m_data(nullptr), m_current_end(nullptr), m_end(nullptr), m_allocator() {}
+
+template <class T, class Allocator>
+vector<T, Allocator>::vector(const Allocator& alloc)
+    : m_data(nullptr),
+      m_current_end(nullptr),
+      m_end(nullptr),
+      m_allocator(alloc) {}
 
 template <class T, class Allocator>
 vector<T, Allocator>::vector(size_type n, const T& val) : m_allocator() {
