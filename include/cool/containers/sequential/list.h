@@ -4,12 +4,25 @@
 #include <utility>
 
 /*************************************************************
- *                    Linked List
+ *                    Doubly Linked List
  * -----------------------------------------------------------
  * A simplified version of stl list.
  **************************************************************/
 
 namespace cool {
+
+template <class T>
+class Node {
+ public:
+  using node_ptr = Node<T>*;
+
+  explicit Node(const T& d) : data(d), prev(nullptr), next(nullptr) {}
+  Node(const T& d, node_ptr p, node_ptr n) : data(d), prev(p), next(n) {}
+
+  T data;
+  node_ptr prev;
+  node_ptr next;
+};
 
 template <class T, class Allocator = std::allocator<T>>
 class list {
@@ -17,46 +30,38 @@ class list {
   using iterator = Node<T>*;
   using const_iterator = const Node<T>*;
   using size_type = size_t;
+  using node_allocator =
+      std::allocator_traits<Allocator>::template rebind_alloc<Node<T>>;
 
-  list(const std::initializer_list<T>& l);
+  list() = default;
+  list(const std::initializer_list<T>& l, const Allocator& alloc);
   list(const Allocator& alloc);
   list(const list& other);
   list(list&& other) noexcept;
   ~list();
 
   void push_back(const T& elem);
+  size_type size() const { return m_size; }
+  bool empty() const { return m_size == 0 && !m_head && !m_tail; }
 
  private:
   iterator m_head = nullptr;
   iterator m_tail = nullptr;
   size_type m_size = 0;
-  Allocator m_allocator = std::allocator<T>();
-
-  template <class T>
-  class Node {
-   public:
-    using node_ptr = Node<T>*;
-    explicit Node(const T& data)
-        : m_data(data), m_prev(nullptr), m_next(nullptr) {}
-    Node(const T& data, node_ptr prev, node_ptr next)
-        : m_data(data), m_prev(prev), m_next(next) {}
-
-    T data;
-    node_ptr prev;
-    node_ptr next;
-  };
+  node_allocator m_allocator = std::allocator<T>();
 };
 
 template <class T, class Allocator>
-list<T, Allocator>::list(const std::initializer_list<T>& l)
+list<T, Allocator>::list(const Allocator& alloc) : m_allocator(alloc) {}
+
+template <class T, class Allocator>
+list<T, Allocator>::list(const std::initializer_list<T>& l,
+                         const Allocator& alloc)
     : m_allocator(alloc) {
   for (const auto& elem : l) {
     push_back(elem);
   }
 }
-
-template <class T, class Allocator>
-list<T, Allocator>::list(const Allocator& alloc) : m_allocator(alloc) {}
 
 template <class T, class Allocator>
 list<T, Allocator>::list(const list<T, Allocator>& other) : m_allocator() {
@@ -72,7 +77,7 @@ list<T, Allocator>::list(list<T, Allocator>&& other) noexcept
 template <class T, class Allocator>
 list<T, Allocator>::~list() {
   iterator curr = m_head;
-  while (curr != nullptr) {
+  while (curr) {
     iterator next = curr->next;
     std::destroy_at(curr);
     m_allocator.deallocate(curr, 1);
@@ -84,6 +89,8 @@ template <class T, class Allocator>
 void list<T, Allocator>::push_back(const T& elem) {
   iterator curr = m_allocator.allocate(1);
   std::construct_at(curr, elem);
+  m_size++;
+
   if (!m_head) {
     m_tail = curr;
     m_head = m_tail;
