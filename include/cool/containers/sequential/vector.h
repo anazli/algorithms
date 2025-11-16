@@ -6,8 +6,7 @@
 /*************************************************************
  *                    Dynamic Array
  * -----------------------------------------------------------
- * A simple dynamic array implementation in a similar style as
- * stl's vector.
+ * A simplified version of stl vector.
  **************************************************************/
 
 namespace cool {
