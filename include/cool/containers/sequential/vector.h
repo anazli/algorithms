@@ -23,11 +23,11 @@ class vector {
   vector(const Allocator& alloc);
   explicit vector(size_type n, const T& val = T());
   vector(const vector& v);
-  vector(const vector&& v) noexcept;
+  vector(vector&& v) noexcept;
   ~vector();
 
   vector& operator=(const vector& v);
-  vector& operator=(const vector&& v) noexcept;
+  vector& operator=(vector&& v) noexcept;
 
   T& operator[](size_type i) { return m_data[i]; }
   const T& operator[](size_type i) const { return m_data[i]; }
@@ -83,7 +83,7 @@ vector<T, Allocator>::vector(const vector<T, Allocator>& v) : m_allocator() {
 }
 
 template <class T, class Allocator>
-vector<T, Allocator>::vector(const vector<T, Allocator>&& v) noexcept
+vector<T, Allocator>::vector(vector<T, Allocator>&& v) noexcept
     : m_allocator(v.m_allocator) {
   initialize_move(v.begin(), v.end());
 }
@@ -105,7 +105,7 @@ vector<T, Allocator>& vector<T, Allocator>::operator=(
 
 template <class T, class Allocator>
 vector<T, Allocator>& vector<T, Allocator>::operator=(
-    const vector<T, Allocator>&& v) noexcept {
+    vector<T, Allocator>&& v) noexcept {
   if (&v != this) {
     destroy();
     initialize_move(v.begin(), v.end());
