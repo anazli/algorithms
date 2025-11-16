@@ -3,9 +3,16 @@
 #include <memory>
 #include <utility>
 
+/*************************************************************
+ *                    Dynamic Array
+ * -----------------------------------------------------------
+ * A simple dynamic array implementation in a similar style as
+ * stl's vector.
+ **************************************************************/
+
 namespace cool {
 
-template <class T>
+template <class T, class Allocator = std::allocator<T>>
 class vector {
  public:
   using iterator = T*;
@@ -48,38 +55,39 @@ class vector {
   iterator m_data;
   iterator m_current_end;
   iterator m_end;
-  std::allocator<T> m_allocator;
+  Allocator m_allocator;
 };
 
-template <class T>
-vector<T>::vector() {
-  m_data = m_current_end = m_end = nullptr;
-}
+template <class T, class Allocator>
+vector<T, Allocator>::vector()
+    : m_data(nullptr), m_current_end(nullptr), m_end(nullptr), m_allocator() {}
 
-template <class T>
-vector<T>::vector(size_type n, const T& val) {
+template <class T, class Allocator>
+vector<T, Allocator>::vector(size_type n, const T& val) : m_allocator() {
   m_data = m_allocator.allocate(n);
   m_current_end = m_end = m_data + n;
   std::uninitialized_fill(m_data, m_end, val);
 }
 
-template <class T>
-vector<T>::vector(const vector<T>& v) {
+template <class T, class Allocator>
+vector<T, Allocator>::vector(const vector<T, Allocator>& v) : m_allocator() {
   initialize_copy(v.begin(), v.end());
 }
 
-template <class T>
-vector<T>::vector(const vector<T>&& v) noexcept {
+template <class T, class Allocator>
+vector<T, Allocator>::vector(const vector<T, Allocator>&& v) noexcept
+    : m_allocator(v.m_allocator) {
   initialize_move(v.begin(), v.end());
 }
 
-template <class T>
-vector<T>::~vector() {
+template <class T, class Allocator>
+vector<T, Allocator>::~vector() {
   destroy();
 }
 
-template <class T>
-vector<T>& vector<T>::operator=(const vector<T>& v) {
+template <class T, class Allocator>
+vector<T, Allocator>& vector<T, Allocator>::operator=(
+    const vector<T, Allocator>& v) {
   if (&v != this) {
     destroy();
     initialize_copy(v.begin(), v.end());
@@ -87,8 +95,9 @@ vector<T>& vector<T>::operator=(const vector<T>& v) {
   return *this;
 }
 
-template <class T>
-vector<T>& vector<T>::operator=(const vector<T>&& v) noexcept {
+template <class T, class Allocator>
+vector<T, Allocator>& vector<T, Allocator>::operator=(
+    const vector<T, Allocator>&& v) noexcept {
   if (&v != this) {
     destroy();
     initialize_move(v.begin(), v.end());
@@ -96,8 +105,8 @@ vector<T>& vector<T>::operator=(const vector<T>&& v) noexcept {
   return *this;
 }
 
-template <class T>
-void vector<T>::destroy() {
+template <class T, class Allocator>
+void vector<T, Allocator>::destroy() {
   if (m_data) {
     std::destroy(begin(), end());
     m_allocator.deallocate(m_data, m_end - m_data);
@@ -105,20 +114,22 @@ void vector<T>::destroy() {
   m_data = m_current_end = m_end = nullptr;
 }
 
-template <class T>
-void vector<T>::initialize_copy(const_iterator left, const_iterator right) {
+template <class T, class Allocator>
+void vector<T, Allocator>::initialize_copy(const_iterator left,
+                                           const_iterator right) {
   m_data = m_allocator.allocate(right - left);
   m_current_end = m_end = std::uninitialized_copy(left, right, m_data);
 }
 
-template <class T>
-void vector<T>::initialize_move(const_iterator left, const_iterator right) {
+template <class T, class Allocator>
+void vector<T, Allocator>::initialize_move(const_iterator left,
+                                           const_iterator right) {
   m_data = m_allocator.allocate(right - left);
   m_current_end = m_end = std::uninitialized_move(left, right, m_data);
 }
 
-template <class T>
-void vector<T>::resize() {
+template <class T, class Allocator>
+void vector<T, Allocator>::resize() {
   size_type size = 2 * (m_end - m_data);
   iterator data = m_allocator.allocate(size);
   iterator current_end = std::uninitialized_copy(m_data, m_current_end, data);
