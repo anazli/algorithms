@@ -36,15 +36,19 @@ class list {
   list() = default;
   list(const std::initializer_list<T>& l, const Allocator& alloc = Allocator());
   list(const Allocator& alloc);
-  list(const list& other);
-  list(list&& other) noexcept;
+  // list(const list& other);
+  // list(list&& other) noexcept;
   ~list();
+
+  void push_front(const T& elem);
+  void pop_front();
 
   void push_back(const T& elem);
   void pop_back();
 
   size_type size() const { return m_size; }
   bool empty() const { return m_size == 0 && !m_head && !m_tail; }
+  void clear();
 
   iterator begin() { return m_head; }
   const_iterator begin() const { return m_head; }
@@ -65,39 +69,59 @@ class list {
 };
 
 template <class T, class Allocator>
-list<T, Allocator>::list(const Allocator& alloc) : m_allocator(alloc) {}
+list<T, Allocator>::list(const Allocator& alloc)
+    : m_allocator(node_allocator(alloc)) {}
 
 template <class T, class Allocator>
 list<T, Allocator>::list(const std::initializer_list<T>& l,
                          const Allocator& alloc)
-    : m_allocator(alloc) {
+    : m_allocator(node_allocator(alloc)) {
   for (const auto& elem : l) {
     push_back(elem);
   }
 }
 
 template <class T, class Allocator>
-list<T, Allocator>::list(const list<T, Allocator>& other) : m_allocator() {
-  initialize_copy(other.begin(), other.end());
-}
-
-template <class T, class Allocator>
-list<T, Allocator>::list(list<T, Allocator>&& other) noexcept
-    : m_allocator(other.m_allocator) {
-  initialize_move(other.begin(), other.end());
-}
-
-template <class T, class Allocator>
 list<T, Allocator>::~list() {
-  iterator curr = m_head;
-  while (curr) {
-    iterator next = curr->next;
-    std::destroy_at(curr);
-    m_allocator.deallocate(curr, 1);
-    curr = next;
-  }
+  clear();
 }
 
+template <class T, class Allocator>
+void list<T, Allocator>::push_front(const T& elem) {
+  iterator it = m_allocator.allocate(1);
+  std::construct_at(it, elem);
+  m_size++;
+
+  if (!m_head) {
+    m_tail = it;
+    m_head = m_tail;
+    return;
+  }
+
+  m_head->prev = it;
+  it->next = m_head;
+  m_head = it;
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::pop_front() {
+  if (!m_head || m_size == 0) return;
+
+  if (m_size == 1) {
+    std::destroy_at(m_head);
+    m_allocator.deallocate(m_head, 1);
+    m_head = m_tail = nullptr;
+    m_size--;
+    return;
+  }
+
+  iterator it = m_head->next;
+  it->prev = nullptr;
+  std::destroy_at(m_head);
+  m_allocator.deallocate(m_head, 1);
+  m_head = it;
+  m_size--;
+}
 template <class T, class Allocator>
 void list<T, Allocator>::push_back(const T& elem) {
   iterator it = m_allocator.allocate(1);
@@ -116,12 +140,35 @@ void list<T, Allocator>::push_back(const T& elem) {
 
 template <class T, class Allocator>
 void list<T, Allocator>::pop_back() {
+  if (!m_tail || m_size == 0) return;
+
+  if (m_size == 1) {
+    std::destroy_at(m_tail);
+    m_allocator.deallocate(m_tail, 1);
+    m_head = m_tail = nullptr;
+    m_size--;
+    return;
+  }
+
   iterator it = m_tail->prev;
   it->next = nullptr;
   std::destroy_at(m_tail);
   m_allocator.deallocate(m_tail, 1);
   m_tail = it;
   m_size--;
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::clear() {
+  iterator curr = m_head;
+  while (curr) {
+    iterator next = curr->next;
+    std::destroy_at(curr);
+    m_allocator.deallocate(curr, 1);
+    curr = next;
+    m_size--;
+  }
+  m_head = m_tail = nullptr;
 }
 
 }  // namespace cool
