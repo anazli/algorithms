@@ -34,15 +34,28 @@ class list {
       std::allocator_traits<Allocator>::template rebind_alloc<Node<T>>;
 
   list() = default;
-  list(const std::initializer_list<T>& l, const Allocator& alloc);
+  list(const std::initializer_list<T>& l, const Allocator& alloc = Allocator());
   list(const Allocator& alloc);
   list(const list& other);
   list(list&& other) noexcept;
   ~list();
 
   void push_back(const T& elem);
+  void pop_back();
+
   size_type size() const { return m_size; }
   bool empty() const { return m_size == 0 && !m_head && !m_tail; }
+
+  iterator begin() { return m_head; }
+  const_iterator begin() const { return m_head; }
+
+  iterator end() { return m_tail; }
+  const_iterator end() const { return m_tail; }
+
+  T& front() { return m_head->data; }
+  const T& front() const { return m_head->data; }
+  T& back() { return m_tail->data; }
+  const T& back() const { return m_tail->data; }
 
  private:
   iterator m_head = nullptr;
@@ -87,18 +100,28 @@ list<T, Allocator>::~list() {
 
 template <class T, class Allocator>
 void list<T, Allocator>::push_back(const T& elem) {
-  iterator curr = m_allocator.allocate(1);
-  std::construct_at(curr, elem);
+  iterator it = m_allocator.allocate(1);
+  std::construct_at(it, elem);
   m_size++;
 
   if (!m_head) {
-    m_tail = curr;
+    m_tail = it;
     m_head = m_tail;
     return;
   }
-  m_tail->next = curr;
-  curr->prev = m_tail;
-  m_tail = m_tail->next;
+  m_tail->next = it;
+  it->prev = m_tail;
+  m_tail = it;
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::pop_back() {
+  iterator it = m_tail->prev;
+  it->next = nullptr;
+  std::destroy_at(m_tail);
+  m_allocator.deallocate(m_tail, 1);
+  m_tail = it;
+  m_size--;
 }
 
 }  // namespace cool
