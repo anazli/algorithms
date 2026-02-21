@@ -1,7 +1,10 @@
 #include <cool/containers/sequential/vector.h>
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include <cmath>
+
+using testing::Eq;
 
 using namespace cool;
 
@@ -11,14 +14,16 @@ class VectorTest : public testing::Test {
 
 TEST_F(VectorTest, GivenNoInputSizeWhenVectorIsCreatedThenItIsEmpty) {
   cool::vector<int> v;
-  ASSERT_EQ(0, v.size());
+
+  EXPECT_THAT(v.size(), Eq(0));
   ASSERT_TRUE(v.empty());
 }
 
 TEST_F(VectorTest, GivenInputSizeWhenVectorIsCreatedThenItsSizeIsCorrect) {
   auto n = 100;
   cool::vector<int> v(n);
-  ASSERT_EQ(n, v.size());
+
+  EXPECT_THAT(v.size(), Eq(n));
   ASSERT_FALSE(v.empty());
 }
 
@@ -27,9 +32,10 @@ TEST_F(VectorTest,
   auto n = 100;
   auto val = acos(-1);
   cool::vector<double> v(n, val);
-  ASSERT_EQ(n, v.size());
+
+  ASSERT_THAT(v.size(), Eq(n));
   for (auto& elem : v) {
-    ASSERT_EQ(val, elem);
+    EXPECT_THAT(elem, Eq(val));
   }
 }
 
@@ -37,18 +43,20 @@ TEST_F(VectorTest, Given2VectorsWhenOneIsCopiedToOtherThenTheyAreEqual) {
   auto val = acos(-1);
   cool::vector<double> a(2, val);
   cool::vector<double> b(a);
-  ASSERT_EQ(a.size(), b.size());
-  ASSERT_EQ(a[0], b[0]);
-  ASSERT_EQ(a[1], b[1]);
+
+  EXPECT_THAT(b.size(), Eq(a.size()));
+  EXPECT_THAT(b[0], Eq(a[0]));
+  ASSERT_THAT(b[1], Eq(a[1]));
 }
 
 TEST_F(VectorTest, Given2VectorsWhenOneIsMovedToOtherThenTheyAreEqual) {
   auto val = acos(-1);
   cool::vector<double> a(2, val);
   cool::vector<double> b(std::move(a));
-  ASSERT_EQ(a.size(), b.size());
-  ASSERT_EQ(a[0], b[0]);
-  ASSERT_EQ(a[1], b[1]);
+
+  EXPECT_THAT(b.size(), Eq(a.size()));
+  EXPECT_THAT(b[0], Eq(a[0]));
+  ASSERT_THAT(b[1], Eq(a[1]));
 }
 
 TEST_F(VectorTest, Given2VectorsWhenOneIsCopyAsignedToOtherThenTheyAreEqual) {
@@ -56,9 +64,10 @@ TEST_F(VectorTest, Given2VectorsWhenOneIsCopyAsignedToOtherThenTheyAreEqual) {
   cool::vector<int> a(2, val);
   cool::vector<int> b(5, 0);
   b = a;
-  ASSERT_EQ(a.size(), b.size());
-  ASSERT_EQ(a[0], b[0]);
-  ASSERT_EQ(a[1], b[1]);
+
+  EXPECT_THAT(b.size(), Eq(a.size()));
+  EXPECT_THAT(b[0], Eq(a[0]));
+  ASSERT_THAT(b[1], Eq(a[1]));
 }
 
 TEST_F(VectorTest, Given2VectorsWhenOneIsMoveAsignedToOtherThenTheyAreEqual) {
@@ -66,15 +75,17 @@ TEST_F(VectorTest, Given2VectorsWhenOneIsMoveAsignedToOtherThenTheyAreEqual) {
   cool::vector<int> a(2, val);
   cool::vector<int> b(5, 0);
   b = std::move(a);
-  ASSERT_EQ(a.size(), b.size());
-  ASSERT_EQ(a[0], b[0]);
-  ASSERT_EQ(a[1], b[1]);
+
+  EXPECT_THAT(b.size(), Eq(a.size()));
+  EXPECT_THAT(b[0], a[0]);
+  ASSERT_THAT(b[1], a[1]);
 }
 
 TEST_F(VectorTest, GivenExistingVectorWhenElementIsAddedThenVectorContainsIt) {
   auto n = 5;
   cool::vector<int> v(n, 0);
   v.push_back(9);
-  ASSERT_EQ(n + 1, v.size());
-  ASSERT_EQ(9, v[v.size() - 1]);
+
+  EXPECT_THAT(v.size(), Eq(n + 1));
+  ASSERT_THAT(v[v.size() - 1], Eq(9));
 }

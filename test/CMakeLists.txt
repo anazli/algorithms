@@ -16,7 +16,7 @@ add_executable(algorithms_test
 )
 
 target_include_directories(algorithms_test PRIVATE ${CMAKE_SOURCE_DIR}/include)
-target_link_libraries(algorithms_test PRIVATE GTest::gtest GTest::gtest_main algorithms)
+target_link_libraries(algorithms_test PRIVATE GTest::gtest GTest::gtest_main gmock algorithms)
 
 include(GoogleTest)
 gtest_discover_tests(algorithms_test)
