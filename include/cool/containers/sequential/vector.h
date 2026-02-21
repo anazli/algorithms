@@ -6,8 +6,7 @@
 /*************************************************************
  *                    Dynamic Array
  * -----------------------------------------------------------
- * A simple dynamic array implementation in a similar style as
- * stl's vector.
+ * A simplified version of stl vector.
  **************************************************************/
 
 namespace cool {
@@ -19,7 +18,7 @@ class vector {
   using const_iterator = const T*;
   using size_type = size_t;
 
-  vector();
+  vector() = default;
   vector(const Allocator& alloc);
   explicit vector(size_type n, const T& val = T());
   vector(const vector& v);
@@ -53,22 +52,14 @@ class vector {
   void destroy();
   void resize();
 
-  iterator m_data;
-  iterator m_current_end;
-  iterator m_end;
-  Allocator m_allocator;
+  iterator m_data = nullptr;
+  iterator m_current_end = nullptr;
+  iterator m_end = nullptr;
+  Allocator m_allocator = std::allocator<T>();
 };
 
 template <class T, class Allocator>
-vector<T, Allocator>::vector()
-    : m_data(nullptr), m_current_end(nullptr), m_end(nullptr), m_allocator() {}
-
-template <class T, class Allocator>
-vector<T, Allocator>::vector(const Allocator& alloc)
-    : m_data(nullptr),
-      m_current_end(nullptr),
-      m_end(nullptr),
-      m_allocator(alloc) {}
+vector<T, Allocator>::vector(const Allocator& alloc) : m_allocator(alloc) {}
 
 template <class T, class Allocator>
 vector<T, Allocator>::vector(size_type n, const T& val) : m_allocator() {

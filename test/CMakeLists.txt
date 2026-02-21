@@ -10,6 +10,7 @@ endif()
 find_package(GTest REQUIRED)
 
 add_executable(test_algorithms
+  test_list.cpp
   test_vector.cpp
 )
 
