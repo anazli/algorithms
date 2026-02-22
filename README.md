@@ -8,6 +8,7 @@ A small collection of algorithms and data structures.
   - **[Sequential](include/cool/containers/sequential)**
     - **[Dynamic Array](include/cool/containers/sequential/vector.h)**
     - **[Linked List](include/cool/containers/sequential/list.h)**
+    - **[Stack](include/cool/containers/sequential/stack.h)**
 
 
 ## Building
