@@ -101,11 +101,9 @@ template <class T, class Allocator>
 vector<T, Allocator>& vector<T, Allocator>::operator=(
     vector<T, Allocator>&& v) noexcept {
   if (&v != this) {
-    destroy();
     std::swap(m_data, v.m_data);
     std::swap(m_current_end, v.m_current_end);
     std::swap(m_end, v.m_end);
-    v.m_data = v.m_current_end = v.m_end = nullptr;
   }
   return *this;
 }
@@ -113,7 +111,7 @@ vector<T, Allocator>& vector<T, Allocator>::operator=(
 template <class T, class Allocator>
 void vector<T, Allocator>::destroy() {
   if (m_data) {
-    std::destroy(begin(), end());
+    std::destroy(begin(), m_current_end);
     m_allocator.deallocate(m_data, m_end - m_data);
     m_data = m_current_end = m_end = nullptr;
   }
@@ -135,13 +133,21 @@ void vector<T, Allocator>::initialize_move(const_iterator left,
 
 template <class T, class Allocator>
 void vector<T, Allocator>::resize() {
-  size_type size = 2 * (m_end - m_data);
-  iterator data = m_allocator.allocate(size);
-  iterator current_end = std::uninitialized_move(m_data, m_current_end, data);
-  destroy();
-  m_data = data;
-  m_current_end = current_end;
-  m_end = m_data + size;
+  size_type old_cap = m_end - m_data;
+  size_type new_cap = (old_cap == 0) ? 1 : 2 * old_cap;
+  size_type current_size = size();
+
+  iterator new_data = m_allocator.allocate(new_cap);
+  std::uninitialized_move(m_data, m_current_end, new_data);
+
+  if (m_data) {
+    std::destroy(m_data, m_current_end);
+    m_allocator.deallocate(m_data, old_cap);
+  }
+
+  m_data = new_data;
+  m_current_end = m_data + current_size;
+  m_end = m_data + new_cap;
 }
 
 }  // namespace cool
