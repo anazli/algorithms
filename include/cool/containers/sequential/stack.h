@@ -14,11 +14,14 @@ class stack {
 
   stack() = default;
   ~stack() { destroy(); }
-  stack(const stack& v) { initialize_copy(m_data, m_end); }
-  stack(stack&& v) noexcept { initialize_move(m_data, m_end); }
+  stack(const stack& st) { initialize_copy(st.m_data, st.m_current); }
+  stack(stack&& st) noexcept
+      : m_data(st.m_data), m_current(st.m_current), m_end(st.m_end) {
+    st.m_data = st.m_current = st.m_end = nullptr;
+  }
 
-  stack& operator=(const stack& v);
-  stack& operator=(stack&& v) noexcept;
+  stack& operator=(const stack& st);
+  stack& operator=(stack&& st) noexcept;
 
   size_type size() const { return m_current - m_data; }
   bool empty() const { return size() == ptrdiff_t(0); }
@@ -30,7 +33,8 @@ class stack {
     std::construct_at(m_current++, elem);
   }
 
-  T top() const { return *(m_current - 1); }
+  T& top() { return *(m_current - 1); }
+  const T& top() const { return *(m_current - 1); }
 
  private:
   void resize();
@@ -46,20 +50,22 @@ class stack {
 };
 
 template <class T>
-stack<T>& stack<T>::operator=(const stack<T>& v) {
-  if (&v != this) {
+stack<T>& stack<T>::operator=(const stack<T>& st) {
+  if (&st != this) {
     destroy();
-    initialize_copy(v.begin(), v.end());
+    initialize_copy(st.m_data, st.m_current);
   }
   return *this;
 }
 
 template <class T>
-stack<T>& stack<T>::operator=(stack<T>&& v) noexcept {
-  if (&v != this) {
-    destroy();
-    initialize_move(v.begin(), v.end());
+stack<T>& stack<T>::operator=(stack<T>&& st) noexcept {
+  if (&st != this) {
+    std::swap(m_data, st.m_data);
+    std::swap(m_current, st.m_current);
+    std::swap(m_end, st.m_end);
   }
+
   return *this;
 }
 
@@ -67,7 +73,7 @@ template <class T>
 void stack<T>::destroy() {
   if (m_data) {
     std::destroy(m_data, m_current);
-    m_allocator.deallocate(m_data, m_current - m_data);
+    m_allocator.deallocate(m_data, m_end - m_data);
   }
   m_data = m_end = m_current = nullptr;
 }
@@ -94,12 +100,6 @@ template <class T>
 void stack<T>::initialize_copy(const_iterator left, const_iterator right) {
   m_data = m_allocator.allocate(right - left);
   m_current = m_end = std::uninitialized_copy(left, right, m_data);
-}
-
-template <class T>
-void stack<T>::initialize_move(const_iterator left, const_iterator right) {
-  m_data = m_allocator.allocate(right - left);
-  m_current = m_end = std::uninitialized_move(left, right, m_data);
 }
 
 }  // namespace cool
