@@ -1,7 +1,10 @@
 #pragma once
 
+#include <cassert>
 #include <memory>
 #include <utility>
+
+#include "error.h"
 
 namespace cool {
 
@@ -33,8 +36,22 @@ class stack {
     std::construct_at(m_current++, elem);
   }
 
-  T& top() { return *(m_current - 1); }
-  const T& top() const { return *(m_current - 1); }
+  // Calling on an empty stack is undefined behavior
+  T& top() {
+    ASSERT(!empty(), "cool::stack::top(): stack is empty");
+    return *(m_current - 1);
+  }
+  const T& top() const {
+    ASSERT(!empty(), "cool::stack::top(): stack is empty");
+    return *(m_current - 1);
+  }
+
+  void pop() {
+    if (!empty()) {
+      m_current--;
+      std::destroy_at(m_current);
+    }
+  }
 
  private:
   void resize();

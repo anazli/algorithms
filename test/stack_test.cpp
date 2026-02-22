@@ -25,3 +25,15 @@ TEST_F(StackTest, GivenEmptyStackWhenPushElemThenItsCorrectlyAdded) {
   EXPECT_THAT(st.size(), Eq(1));
   ASSERT_FALSE(st.empty());
 }
+
+TEST_F(StackTest, GivenEmptyStackWhenTopThenItsCorrectlyAdded) {
+  ASSERT_DEATH(auto t = st.top(), "stack is empty");
+}
+
+TEST_F(StackTest, GivenNoneEmptyStackWhenPopElemThenItsCorrectlyRemoved) {
+  st.push(test);
+  st.pop();
+
+  EXPECT_THAT(st.size(), Eq(0));
+  ASSERT_TRUE(st.empty());
+}
