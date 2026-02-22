@@ -3,6 +3,8 @@
 #include <memory>
 #include <utility>
 
+#include "error.h"
+
 /*************************************************************
  *                    Dynamic Array
  * -----------------------------------------------------------
@@ -51,8 +53,14 @@ class vector {
     }
   }
 
-  const T& back() const { return *(m_current_end - 1); }
-  T& back() { return *(m_current_end - 1); }
+  const T& back() const {
+    ASSERT(m_data != nullptr, "cool::vector::back() vector is empty");
+    return *(m_current_end - 1);
+  }
+  T& back() {
+    ASSERT(m_data != nullptr, "cool::vector::back() vector is empty");
+    return *(m_current_end - 1);
+  }
 
   bool empty() const { return size() == ptrdiff_t(0); }
 

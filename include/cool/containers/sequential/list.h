@@ -61,19 +61,19 @@ class list {
   const_iterator end() const { return nullptr; }
 
   T& front() {
-    ASSERT(m_head != nullptr, "cool::list::front() called on empty list");
+    ASSERT(m_head != nullptr, "cool::list::front() list is empty");
     return m_head->data;
   }
   const T& front() const {
-    ASSERT(m_head != nullptr, "cool::list::front() called on empty list");
+    ASSERT(m_head != nullptr, "cool::list::front() list is empty");
     return m_head->data;
   }
   T& back() {
-    ASSERT(m_head != nullptr, "cool::list::back() called on empty list");
+    ASSERT(m_head != nullptr, "cool::list::back() list is empty");
     return m_tail->data;
   }
   const T& back() const {
-    ASSERT(m_head != nullptr, "cool::list::back() called on empty list");
+    ASSERT(m_head != nullptr, "cool::list::back() list is empty");
     return m_tail->data;
   }
 
