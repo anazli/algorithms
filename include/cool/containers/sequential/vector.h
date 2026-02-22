@@ -75,8 +75,11 @@ vector<T, Allocator>::vector(const vector<T, Allocator>& v) : m_allocator() {
 
 template <class T, class Allocator>
 vector<T, Allocator>::vector(vector<T, Allocator>&& v) noexcept
-    : m_allocator(v.m_allocator) {
-  initialize_move(v.begin(), v.end());
+    : m_allocator(v.m_allocator),
+      m_data(v.m_data),
+      m_current_end(v.m_current_end),
+      m_end(v.m_end) {
+  v.m_data = v.m_current_end = v.m_end = nullptr;
 }
 
 template <class T, class Allocator>
@@ -99,7 +102,10 @@ vector<T, Allocator>& vector<T, Allocator>::operator=(
     vector<T, Allocator>&& v) noexcept {
   if (&v != this) {
     destroy();
-    initialize_move(v.begin(), v.end());
+    std::swap(m_data, v.m_data);
+    std::swap(m_current_end, v.m_current_end);
+    std::swap(m_end, v.m_end);
+    v.m_data = v.m_current_end = v.m_end = nullptr;
   }
   return *this;
 }
@@ -109,8 +115,8 @@ void vector<T, Allocator>::destroy() {
   if (m_data) {
     std::destroy(begin(), end());
     m_allocator.deallocate(m_data, m_end - m_data);
+    m_data = m_current_end = m_end = nullptr;
   }
-  m_data = m_current_end = m_end = nullptr;
 }
 
 template <class T, class Allocator>
@@ -131,7 +137,7 @@ template <class T, class Allocator>
 void vector<T, Allocator>::resize() {
   size_type size = 2 * (m_end - m_data);
   iterator data = m_allocator.allocate(size);
-  iterator current_end = std::uninitialized_copy(m_data, m_current_end, data);
+  iterator current_end = std::uninitialized_move(m_data, m_current_end, data);
   destroy();
   m_data = data;
   m_current_end = current_end;

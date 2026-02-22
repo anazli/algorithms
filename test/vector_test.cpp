@@ -39,7 +39,7 @@ TEST_F(VectorTest,
   }
 }
 
-TEST_F(VectorTest, Given2VectorsWhenOneIsCopiedToOtherThenTheyAreEqual) {
+TEST_F(VectorTest, GivenVectorWhenCopiedThenCopyIsCorrect) {
   auto val = acos(-1);
   cool::vector<double> a(2, val);
   cool::vector<double> b(a);
@@ -49,17 +49,20 @@ TEST_F(VectorTest, Given2VectorsWhenOneIsCopiedToOtherThenTheyAreEqual) {
   ASSERT_THAT(b[1], Eq(a[1]));
 }
 
-TEST_F(VectorTest, Given2VectorsWhenOneIsMovedToOtherThenTheyAreEqual) {
+TEST_F(VectorTest, GivenVectorWhenIsMovedThenResultIsCorrect) {
   auto val = acos(-1);
   cool::vector<double> a(2, val);
+  auto size = a.size();
+  auto elem0 = a[0];
+  auto elem1 = a[1];
   cool::vector<double> b(std::move(a));
 
-  EXPECT_THAT(b.size(), Eq(a.size()));
-  EXPECT_THAT(b[0], Eq(a[0]));
-  ASSERT_THAT(b[1], Eq(a[1]));
+  EXPECT_THAT(b.size(), Eq(size));
+  EXPECT_THAT(b[0], Eq(elem0));
+  ASSERT_THAT(b[1], Eq(elem1));
 }
 
-TEST_F(VectorTest, Given2VectorsWhenOneIsCopyAsignedToOtherThenTheyAreEqual) {
+TEST_F(VectorTest, GivenVectorWhenIsCopyAsignedThenCopyIsCorrect) {
   auto val = acos(-1);
   cool::vector<int> a(2, val);
   cool::vector<int> b(5, 0);
@@ -70,15 +73,20 @@ TEST_F(VectorTest, Given2VectorsWhenOneIsCopyAsignedToOtherThenTheyAreEqual) {
   ASSERT_THAT(b[1], Eq(a[1]));
 }
 
-TEST_F(VectorTest, Given2VectorsWhenOneIsMoveAsignedToOtherThenTheyAreEqual) {
+TEST_F(VectorTest, GivenVectorWhenMoveAsignedThenResultIsCorrect) {
   auto val = acos(-1);
   cool::vector<int> a(2, val);
-  cool::vector<int> b(5, 0);
+
+  auto size = a.size();
+  auto elem0 = a[0];
+  auto elem1 = a[1];
+
+  cool::vector<int> b;
   b = std::move(a);
 
-  EXPECT_THAT(b.size(), Eq(a.size()));
-  EXPECT_THAT(b[0], a[0]);
-  ASSERT_THAT(b[1], a[1]);
+  EXPECT_THAT(b.size(), Eq(size));
+  EXPECT_THAT(b[0], elem0);
+  ASSERT_THAT(b[1], elem1);
 }
 
 TEST_F(VectorTest, GivenExistingVectorWhenElementIsAddedThenVectorContainsIt) {
