@@ -89,11 +89,20 @@ TEST_F(VectorTest, GivenVectorWhenMoveAsignedThenResultIsCorrect) {
   ASSERT_THAT(b[1], elem1);
 }
 
-TEST_F(VectorTest, GivenExistingVectorWhenElementIsAddedThenVectorContainsIt) {
+TEST_F(VectorTest, GivenVectorWhenElementIsAddedThenVectorContainsIt) {
   auto n = 5;
   cool::vector<int> v(n, 0);
   v.push_back(9);
 
   EXPECT_THAT(v.size(), Eq(n + 1));
-  ASSERT_THAT(v[v.size() - 1], Eq(9));
+  ASSERT_THAT(v.back(), Eq(9));
+}
+
+TEST_F(VectorTest, GivenVectorWhenElementIsRemovedThenVectorIsUpdated) {
+  cool::vector<int> v;
+  v.push_back(5);
+  v.pop_back();
+
+  EXPECT_THAT(v.size(), Eq(0));
+  ASSERT_TRUE(v.empty());
 }

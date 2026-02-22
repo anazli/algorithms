@@ -44,6 +44,16 @@ class vector {
     }
     std::construct_at(m_current_end++, elem);
   }
+
+  void pop_back() {
+    if (m_current_end != m_data) {
+      std::destroy_at(--m_current_end);
+    }
+  }
+
+  const T& back() const { return *(m_current_end - 1); }
+  T& back() { return *(m_current_end - 1); }
+
   bool empty() const { return size() == ptrdiff_t(0); }
 
  private:
