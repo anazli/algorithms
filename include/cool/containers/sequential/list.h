@@ -3,6 +3,8 @@
 #include <memory>
 #include <utility>
 
+#include "error.h"
+
 /*************************************************************
  *                    Doubly Linked List
  * -----------------------------------------------------------
@@ -37,8 +39,10 @@ class list {
   list(const std::initializer_list<T>& l, const Allocator& alloc = Allocator());
   list(const Allocator& alloc);
   // list(const list& other);
-  // list(list&& other) noexcept;
+  list(list&& l) noexcept;
   ~list();
+
+  list& operator=(list&& l) noexcept;
 
   void push_front(const T& elem);
   void pop_front();
@@ -53,15 +57,29 @@ class list {
   iterator begin() { return m_head; }
   const_iterator begin() const { return m_head; }
 
-  iterator end() { return m_tail; }
-  const_iterator end() const { return m_tail; }
+  iterator end() { return nullptr; }
+  const_iterator end() const { return nullptr; }
 
-  T& front() { return m_head->data; }
-  const T& front() const { return m_head->data; }
-  T& back() { return m_tail->data; }
-  const T& back() const { return m_tail->data; }
+  T& front() {
+    ASSERT(m_head != nullptr, "cool::list::front() called on empty list");
+    return m_head->data;
+  }
+  const T& front() const {
+    ASSERT(m_head != nullptr, "cool::list::front() called on empty list");
+    return m_head->data;
+  }
+  T& back() {
+    ASSERT(m_head != nullptr, "cool::list::back() called on empty list");
+    return m_tail->data;
+  }
+  const T& back() const {
+    ASSERT(m_head != nullptr, "cool::list::back() called on empty list");
+    return m_tail->data;
+  }
 
  private:
+  iterator create_node(const T& elem);
+
   iterator m_head = nullptr;
   iterator m_tail = nullptr;
   size_type m_size = 0;
@@ -82,14 +100,38 @@ list<T, Allocator>::list(const std::initializer_list<T>& l,
 }
 
 template <class T, class Allocator>
+list<T, Allocator>::list(list&& l) noexcept
+    : m_head(l.m_head),
+      m_tail(l.m_tail),
+      m_size(l.m_size),
+      m_allocator(l.m_allocator) {
+  l.m_head = l.m_tail = nullptr;
+  l.m_size = 0;
+}
+
+template <class T, class Allocator>
 list<T, Allocator>::~list() {
   clear();
 }
 
 template <class T, class Allocator>
+list<T, Allocator>& list<T, Allocator>::operator=(list&& l) noexcept {
+  if (&l != this) {
+    clear();
+
+    m_head = l.m_head;
+    m_tail = l.m_tail;
+    m_size = l.m_size;
+
+    l.m_head = l.m_tail = nullptr;
+    l.m_size = 0;
+  }
+  return *this;
+}
+
+template <class T, class Allocator>
 void list<T, Allocator>::push_front(const T& elem) {
-  iterator it = m_allocator.allocate(1);
-  std::construct_at(it, elem);
+  iterator it = create_node(elem);
   m_size++;
 
   if (!m_head) {
@@ -124,8 +166,7 @@ void list<T, Allocator>::pop_front() {
 }
 template <class T, class Allocator>
 void list<T, Allocator>::push_back(const T& elem) {
-  iterator it = m_allocator.allocate(1);
-  std::construct_at(it, elem);
+  iterator it = create_node(elem);
   m_size++;
 
   if (!m_head) {
@@ -169,6 +210,13 @@ void list<T, Allocator>::clear() {
     m_size--;
   }
   m_head = m_tail = nullptr;
+}
+
+template <class T, class Allocator>
+list<T, Allocator>::iterator list<T, Allocator>::create_node(const T& elem) {
+  iterator it = m_allocator.allocate(1);
+  std::construct_at(it, elem);
+  return it;
 }
 
 }  // namespace cool
