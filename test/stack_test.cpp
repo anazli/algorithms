@@ -26,8 +26,8 @@ TEST_F(StackTest, GivenEmptyStackWhenPushElemThenItsCorrectlyAdded) {
   ASSERT_FALSE(st.empty());
 }
 
-TEST_F(StackTest, GivenEmptyStackWhenTopThenItsCorrectlyAdded) {
-  ASSERT_DEATH(auto t = st.top(), "stack is empty");
+TEST_F(StackTest, GivenEmptyStackWhenTopThenItsAnError) {
+  EXPECT_DEATH(auto t = st.top(), "stack is empty");
 }
 
 TEST_F(StackTest, GivenNoneEmptyStackWhenPopElemThenItsCorrectlyRemoved) {
@@ -36,4 +36,44 @@ TEST_F(StackTest, GivenNoneEmptyStackWhenPopElemThenItsCorrectlyRemoved) {
 
   EXPECT_THAT(st.size(), Eq(0));
   ASSERT_TRUE(st.empty());
+}
+
+TEST_F(StackTest, GivenNoneEmptyStackWhenCopiedThenItsCopyIsValid) {
+  st.push(test);
+  auto other(st);
+
+  EXPECT_THAT(other.size(), st.size());
+  EXPECT_THAT(other.top(), st.top());
+  ASSERT_FALSE(other.empty());
+}
+
+TEST_F(StackTest, GivenNoneEmptyStackWhenMovedThenTheNewStackIsValid) {
+  st.push(test);
+  auto elem = st.top();
+  auto other(std::move(st));
+
+  EXPECT_THAT(other.size(), 1);
+  EXPECT_THAT(other.top(), elem);
+  ASSERT_FALSE(other.empty());
+}
+
+TEST_F(StackTest, GivenNoneEmptyStackWhenCopyAssignedThenItsCopyIsValid) {
+  st.push(test);
+  stack<std::string> other;
+  other = st;
+
+  EXPECT_THAT(other.size(), st.size());
+  EXPECT_THAT(other.top(), st.top());
+  ASSERT_FALSE(other.empty());
+}
+
+TEST_F(StackTest, GivenNoneEmptyStackWhenMoveAssignedThenTheNewStackIsValid) {
+  st.push(test);
+  auto elem = st.top();
+  stack<std::string> other;
+  other = std::move(st);
+
+  EXPECT_THAT(other.size(), 1);
+  EXPECT_THAT(other.top(), elem);
+  ASSERT_FALSE(other.empty());
 }
