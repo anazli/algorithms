@@ -11,6 +11,7 @@ list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/build/Release/generators")
 add_library(algorithms INTERFACE
 	include/cool/containers/sequential/list.h
 	include/cool/containers/sequential/vector.h
+	include/cool/containers/sequential/stack.h
 )
 
 target_include_directories(algorithms

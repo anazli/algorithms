@@ -1,7 +1,10 @@
 #include <cool/containers/sequential/list.h>
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include <cmath>
+
+using testing::Eq;
 
 using namespace cool;
 
@@ -11,27 +14,30 @@ class ListTest : public testing::Test {
 
 TEST_F(ListTest, GivenNoInputSizeWhenListIsCreatedThenItIsEmpty) {
   cool::list<int> l;
-  EXPECT_EQ(0, l.size());
-  EXPECT_TRUE(l.empty());
+
+  EXPECT_THAT(l.size(), Eq(0));
+  ASSERT_TRUE(l.empty());
 }
 
 TEST_F(ListTest, GivenInputElementWhenListIsCreatedThenItsSizeIsCorrect) {
   cool::list<int> l;
   l.push_back(1);
-  EXPECT_EQ(1, l.size());
-  EXPECT_FALSE(l.empty());
+
+  EXPECT_THAT(l.size(), Eq(1));
+  ASSERT_FALSE(l.empty());
 }
 
 TEST_F(ListTest, GivenInitializerListWhenListIsCreatedThenItsSizeIsCorrect) {
   std::initializer_list<int> init_list = {1, 2, 3, 4};
   cool::list<int> l(init_list);
-  EXPECT_EQ(init_list.size(), l.size());
+
+  EXPECT_THAT(l.size(), Eq(init_list.size()));
   EXPECT_FALSE(l.empty());
-  EXPECT_EQ(1, l.front());
-  EXPECT_EQ(4, l.back());
+  EXPECT_THAT(l.front(), Eq(1));
+  ASSERT_THAT(l.back(), Eq(4));
 }
 
-TEST_F(ListTest, GivenInputWhenElemsAreAddedAndRemovedBackThenItIsCorrect) {
+TEST_F(ListTest, GivenEmptyListWhenPushPopBackThenResultIsCorrect) {
   cool::list<int> l;
   l.push_back(1);
   l.push_back(2);
@@ -40,13 +46,14 @@ TEST_F(ListTest, GivenInputWhenElemsAreAddedAndRemovedBackThenItIsCorrect) {
   l.push_back(4);
   l.pop_back();
   l.pop_back();
-  EXPECT_EQ(1, l.size());
+
+  EXPECT_THAT(l.size(), Eq(1));
   EXPECT_FALSE(l.empty());
-  EXPECT_EQ(1, l.front());
-  EXPECT_EQ(1, l.back());
+  EXPECT_THAT(l.front(), Eq(1));
+  ASSERT_THAT(l.back(), Eq(1));
 }
 
-TEST_F(ListTest, GivenInputWhenElemsAreAddedAndRemovedFrontThenItIsCorrect) {
+TEST_F(ListTest, GivenEmptyListWhenPushPopFrontThenResultIsCorrect) {
   cool::list<int> l;
   l.push_front(1);
   l.push_front(2);
@@ -55,13 +62,14 @@ TEST_F(ListTest, GivenInputWhenElemsAreAddedAndRemovedFrontThenItIsCorrect) {
   l.push_front(4);
   l.pop_front();
   l.pop_front();
-  EXPECT_EQ(1, l.size());
+
+  EXPECT_THAT(l.size(), Eq(1));
   EXPECT_FALSE(l.empty());
-  EXPECT_EQ(1, l.front());
-  EXPECT_EQ(1, l.back());
+  EXPECT_THAT(l.front(), Eq(1));
+  ASSERT_THAT(l.back(), Eq(1));
 }
 
-TEST_F(ListTest, GivenInputWhenElemsAreAddedAndRemovedThenItIsCorrect) {
+TEST_F(ListTest, GivenEmptyListWhenPushPopFrontBackThenResultIsCorrect) {
   cool::list<int> l;
   l.push_front(1);
   l.push_front(2);
@@ -70,10 +78,11 @@ TEST_F(ListTest, GivenInputWhenElemsAreAddedAndRemovedThenItIsCorrect) {
   l.push_back(4);
   l.push_front(5);
   l.pop_back();
-  EXPECT_EQ(3, l.size());
+
+  EXPECT_THAT(l.size(), Eq(3));
   EXPECT_FALSE(l.empty());
-  EXPECT_EQ(5, l.front());
-  EXPECT_EQ(3, l.back());
+  EXPECT_THAT(l.front(), Eq(5));
+  ASSERT_THAT(l.back(), Eq(3));
 }
 
 TEST_F(ListTest, GivenNonEmptyListWhenItsClearedThenAllElementsAreGone) {
@@ -83,6 +92,7 @@ TEST_F(ListTest, GivenNonEmptyListWhenItsClearedThenAllElementsAreGone) {
   l.push_back(3);
   l.push_front(4);
   l.clear();
-  EXPECT_EQ(0, l.size());
-  EXPECT_TRUE(l.empty());
+
+  EXPECT_THAT(l.size(), Eq(0));
+  ASSERT_TRUE(l.empty());
 }
