@@ -117,14 +117,9 @@ list<T, Allocator>::~list() {
 template <class T, class Allocator>
 list<T, Allocator>& list<T, Allocator>::operator=(list&& l) noexcept {
   if (&l != this) {
-    clear();
-
-    m_head = l.m_head;
-    m_tail = l.m_tail;
-    m_size = l.m_size;
-
-    l.m_head = l.m_tail = nullptr;
-    l.m_size = 0;
+    std::swap(m_head, l.m_head);
+    std::swap(m_tail, l.m_tail);
+    std::swap(m_size, l.m_size);
   }
   return *this;
 }
