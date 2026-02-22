@@ -37,7 +37,7 @@ TEST_F(ListTest, GivenInitializerListWhenListIsCreatedThenItsSizeIsCorrect) {
   ASSERT_THAT(l.back(), Eq(4));
 }
 
-TEST_F(ListTest, GivenInputWhenElemsAreAddedAndRemovedBackThenItIsCorrect) {
+TEST_F(ListTest, GivenEmptyListWhenPushPopBackThenResultIsCorrect) {
   cool::list<int> l;
   l.push_back(1);
   l.push_back(2);
@@ -53,7 +53,7 @@ TEST_F(ListTest, GivenInputWhenElemsAreAddedAndRemovedBackThenItIsCorrect) {
   ASSERT_THAT(l.back(), Eq(1));
 }
 
-TEST_F(ListTest, GivenInputWhenElemsAreAddedAndRemovedFrontThenItIsCorrect) {
+TEST_F(ListTest, GivenEmptyListWhenPushPopFrontThenResultIsCorrect) {
   cool::list<int> l;
   l.push_front(1);
   l.push_front(2);
@@ -69,7 +69,7 @@ TEST_F(ListTest, GivenInputWhenElemsAreAddedAndRemovedFrontThenItIsCorrect) {
   ASSERT_THAT(l.back(), Eq(1));
 }
 
-TEST_F(ListTest, GivenInputWhenElemsAreAddedAndRemovedThenItIsCorrect) {
+TEST_F(ListTest, GivenEmptyListWhenPushPopFrontBackThenResultIsCorrect) {
   cool::list<int> l;
   l.push_front(1);
   l.push_front(2);
