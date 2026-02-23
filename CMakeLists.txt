@@ -12,6 +12,7 @@ add_library(algorithms INTERFACE
 	include/cool/containers/sequential/list.h
 	include/cool/containers/sequential/vector.h
 	include/cool/containers/sequential/stack.h
+	include/cool/algorithms/sort.h
 )
 
 target_include_directories(algorithms

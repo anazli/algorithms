@@ -11,6 +11,7 @@ find_package(GTest REQUIRED)
 
 add_executable(algorithms_test
   list_test.cpp
+  sort_test.cpp
   stack_test.cpp
   vector_test.cpp
 )

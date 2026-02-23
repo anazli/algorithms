@@ -22,6 +22,7 @@ class vector {
 
   vector() = default;
   vector(const Allocator& alloc);
+  vector(const std::initializer_list<T>& init_list);
   explicit vector(size_type n, const T& val = T());
   vector(const vector& v);
   vector(vector&& v) noexcept;
@@ -78,6 +79,13 @@ class vector {
 
 template <class T, class Allocator>
 vector<T, Allocator>::vector(const Allocator& alloc) : m_allocator(alloc) {}
+
+template <class T, class Allocator>
+inline vector<T, Allocator>::vector(const std::initializer_list<T>& init_list) {
+  for (const auto& elem : init_list) {
+    push_back(elem);
+  }
+}
 
 template <class T, class Allocator>
 vector<T, Allocator>::vector(size_type n, const T& val) : m_allocator() {
