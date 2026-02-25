@@ -6,7 +6,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/build/Release/generators")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
+endif()
+
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/build/${CMAKE_BUILD_TYPE}/generators")
 
 add_library(algorithms INTERFACE
 	include/cool/containers/sequential/list.h
@@ -20,11 +24,6 @@ target_include_directories(algorithms
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:include>
 )
-
-#target_include_directories(algorithms 
-#    PRIVATE
-#        ${CMAKE_CURRENT_SOURCE_DIR}/src
-#)
 
 target_compile_features(algorithms INTERFACE cxx_std_20)
 

@@ -48,6 +48,7 @@ CMakeCache.txt
 cmake_install.cmake
 Makefile
 *.cmake
+CMakeUserPresets.json
 
 # Conan
 .conan2/
